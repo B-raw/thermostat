@@ -8,14 +8,15 @@ class Thermostat < Sinatra::Base
     erb(:index)
   end
 
-  post '/thermostat/update' do
+  post '/thermostat/update', :provides => :json do
     request.body.rewind  # in case someone already read it
-    data = request.body.read
-    ThermostatState.create(temperature: data[-2,2]) #temp=10
+    params = JSON.parse(request.env["rack.input"].read)
+    p params[:temp]
   end
 
 =begin
-$.ajax({ type: 'POST', dataType: 'json', url: '/thermostat/update', data : { temp: 10},
+var data = { temp: 10, city: "Edinburgh"}
+$.ajax({ type: 'POST', dataType: 'json', url: '/thermostat/update', data : JSON.stringify(data),
       success: function(json) {
         alert('all done');
       } })
