@@ -26,6 +26,7 @@ $(document).ready(function() {
   function updateTemperature() {
     $('#temperature').text(thermostat.temperature);
     $('#temperature').attr('class', thermostat.energyUsage());
+    postTemperature();
   }
 
   function updatePowerSavingStatus() {
@@ -51,7 +52,23 @@ $(document).ready(function() {
 		});
 	});
 
+  function postTemperature() {
+    var data = {temp: thermostat.temperature, city: $("#location").text(), power_saving: thermostat.powerSavingMode};
+
+    $.ajax({
+      type: 'POST',
+      dataType: 'json',
+      url: '/thermostat/update',
+      data : data,
+      success: function(json) {
+          console.log("This is what my server gives: ", data);
+      }
+    });
+  };
+
 });
+
+
 
 
 // $.ajax({ type: 'POST', url: '/thermostat/update', data: 10 })

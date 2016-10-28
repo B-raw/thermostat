@@ -6,16 +6,20 @@ require 'ostruct'
 
 class Thermostat < Sinatra::Base
   get '/' do
+    thermostat_state = ThermostatState.first_or_create
     erb(:index)
   end
 
   post '/thermostat/update' do
-    request.body.rewind  # in case someone already read it
-    data = request.body.read
-    data = JSON.parse(data, object_class: OpenStruct)
+     # in case someone already read it
+    # data = JSON.parse(data, object_class: OpenStruct)
     thermostat_state = ThermostatState.first_or_create
-    thermostat_state.update(:temperature => data['temp'], :city => data['city'], :power_saving => data['power_saving']) #temp=10
-    p data['temp']
+    thermostat_state.update(:temperature => params[:temp], :city => params[:city], :power_saving => params[:power_saving]) #temp=10
+  end
+
+  get '/mydata' do
+    thermostat_state = ThermostatState.get(1)
+    p thermostat_state[:city]
   end
 
 =begin
